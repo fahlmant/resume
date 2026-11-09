@@ -1,16 +1,22 @@
-TARGET=resume
-HTML=main_html
+default: resume
 
-default: pdf
+resume: resume.pdf
 
-dvi: ${TARGET}.tex 
-	latex ${TARGET}.tex
+coverletter: coverletter.pdf
 
-ps: dvi
-	dvips -R -Poutline -t letter ${TARGET}.dvi -o ${TARGET}.ps
+%.dvi: %.tex
+	latex $<
 
-pdf: ps
-	ps2pdf ${TARGET}.ps
+%.ps: %.dvi
+	dvips -R -Poutline -t letter $< -o $@
+
+%.pdf: %.ps
+	ps2pdf $<
+
+# keep intermediate .dvi/.ps files instead of auto-deleting them
+.SECONDARY:
+
+.PHONY: default resume coverletter clean veryclean
 
 clean:
 	rm *.log
